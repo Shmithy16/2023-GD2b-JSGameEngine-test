@@ -14,7 +14,7 @@ class Player extends GameObject {
   // Constructor initializes the game object and add necessary components
   constructor(x, y) {
     super(x, y); // Call parent's constructor
-    this.renderer = new Renderer('blue', 50, 50, Images.player); // Add renderer
+    this.renderer = new Renderer('blue', 50, 60, Images.player); // Add renderer
     this.addComponent(this.renderer);
     this.addComponent(new Physics({ x: 0, y: 0 }, { x: 0, y: 0 })); // Add physics
     this.addComponent(new Input()); // Add input for handling user input
@@ -151,6 +151,7 @@ class Player extends GameObject {
       this.jumpTimer = this.jumpTime;
       this.getComponent(Physics).velocity.y = -this.jumpForce;
       this.isOnPlatform = false;
+      new Renderer('blue', 50, 60, Images.playerJump);
     }
   }
   
@@ -167,7 +168,8 @@ class Player extends GameObject {
     if (!this.isInvulnerable) {
       this.lives--;
       this.isInvulnerable = true;
-      // var element = document.getElementById(Images.player.src);
+      //tried to make it so when the player got hit they would become opaque while they were invincible but couldnt get it working
+      // var element = document.getElementById("player");
       // element.style.opacity = "0.9";
       // element.style.filter  = 'alpha(opacity=90)';
       
@@ -178,6 +180,13 @@ class Player extends GameObject {
     }
   }
 
+  collidedWithObstacle() {
+    // Checks collision with an obstacle and kills player if not invulnerable
+    if (!this.isInvulnerable) {
+      //if a player touches and obstacle they die instantly
+      this.lives-= 3;
+    }
+  }
   collect(collectible) {
     // Handle collectible pickup
     this.score += collectible.value;

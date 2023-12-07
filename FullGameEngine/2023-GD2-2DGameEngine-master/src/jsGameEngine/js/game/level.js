@@ -5,6 +5,7 @@ import Enemy from './enemy.js';
 import PlayerUI from './playerUI.js';
 import Platform from './platform.js';
 import Collectible from './collectible.js';
+import Obstacle from './obstacle.js';
 
 // Define a class Level that extends the Game class from the engine
 class Level extends Game {
@@ -28,6 +29,10 @@ class Level extends Game {
     const platformWidth = 200;
     const gap = 100;
 
+    //defines obstacle size
+    const obstacleWidth = 40;
+    const obGap = 150;
+
     // Create platforms and add them to the game
     const platforms = [
       new Platform(0, this.canvas.height - 20, platformWidth, 20),
@@ -38,6 +43,19 @@ class Level extends Game {
     ];
     for (const platform of platforms) {
       this.addGameObject(platform);
+    }
+
+    //this creates the obstacles and adds them to the game
+    const obstacles = [
+      new Obstacle(0, this.canvas.height - 60, obstacleWidth, 20),
+      // new Obstacle(obstacleWidth + obGap, this.canvas.height - 40, obstacleWidth, 20),
+      new Obstacle(2 * (obstacleWidth + obGap), this.canvas.height - 60, obstacleWidth, 20),
+      // new Obstacle(3 * (obstacleWidth + obGap), this.canvas.height - 40, obstacleWidth, 20),
+      new Obstacle(4 * (obstacleWidth + obGap)-10, this.canvas.height - 60, obstacleWidth, 20),
+    ];
+
+    for (const obstacle of obstacles) {
+      this.addGameObject(obstacle);
     }
 
     // Create enemies and add them to the game
