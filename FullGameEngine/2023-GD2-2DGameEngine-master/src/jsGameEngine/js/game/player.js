@@ -167,6 +167,10 @@ class Player extends GameObject {
     if (!this.isInvulnerable) {
       this.lives--;
       this.isInvulnerable = true;
+      // var element = document.getElementById(Images.player.src);
+      // element.style.opacity = "0.9";
+      // element.style.filter  = 'alpha(opacity=90)';
+      
       // Make player vulnerable again after 2 seconds
       setTimeout(() => {
         this.isInvulnerable = false;
