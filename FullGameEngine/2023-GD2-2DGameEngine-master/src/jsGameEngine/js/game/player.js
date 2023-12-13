@@ -31,13 +31,26 @@ class Player extends GameObject {
     this.isGamepadMovement = false;
     this.isGamepadJump = false;
     this.inAir = false;
+    this.upHeld = false;
+    this.hasdoubleJump = false;
+    this.canDash = true;
+    this.dashSpeed = 500;
+    this.dashCool = 0;
+    this.dashCool2 = 0;
   }
 
   // The update function runs every frame and contains game logic
   update(deltaTime) {
+    
     const physics = this.getComponent(Physics); // Get physics component
     const input = this.getComponent(Input); // Get input component
+    if(this.upHeld){
+        this.upHeld = input.isKeyDown('ArrowUp');
+      }
 
+    if(!this.hasdoubleJump){
+      this.hasdoubleJump = this.isOnPlatform;
+    }
     this.handleGamepadInput(input);
     
     // Handle player movement
@@ -50,10 +63,13 @@ class Player extends GameObject {
     } else if (!this.isGamepadMovement) {
       physics.velocity.x = 0;
     }
+    
+    this.dashForward(deltaTime,input,physics);
 
     // Handle player jumping
-    if (!this.isGamepadJump && input.isKeyDown('ArrowUp') && this.isOnPlatform) {
+    if (!this.isGamepadJump && input.isKeyDown('ArrowUp') && !this.upHeld) {
       this.startJump();
+      this.upHeld = true;
     }
 
     if (this.isJumping) {
@@ -153,34 +169,35 @@ class Player extends GameObject {
       this.getComponent(Physics).velocity.y = -this.jumpForce;
       this.isOnPlatform = false;
       new Renderer('blue', 50, 60, Images.playerJump);
-      this.inAir = true;
-      console.log(this.inAir);
-      setTimeout(()=> {
-        this.doubleJump();
-        console.log("Test1")
-      },1000)
+    } else if(this.hasdoubleJump){
+      this.isJumping = true;
+      this.jumpTimer = this.jumpTime;
+      this.getComponent(Physics).velocity.y = -this.jumpForce;
+      this.hasdoubleJump = false;
+      new Renderer('blue', 50, 60, Images.playerJump);
+    }
+  }
+dashForward(deltaTime,input,physics){ 
+    if(this.canDash && input.isKeyDown("Space")&& this.dashCool<=0 && this.dashCool2<=0){
+      this.dashCool = .5;
+    }else if(this.dashCool>0){
+      this.dashCool-=deltaTime;
+      physics.velocity.x = -this.dashSpeed*this.direction;   //dash actually goes to the right direction
+      this.dashCool2=1;
+    }else if(this.dashCool2>0){
+      this.dashCool2-=deltaTime;
     }
   }
 
-  doubleJump(){
-    const input = this.getComponent(Input);
-    if(this.inAir && this.isJumping){
-        if (!this.isGamepadJump && input.isKeyDown('ArrowUp') && this.inAir) {
-          this.getComponent(Physics).velocity.y = -this.jumpForce;
-        }
-    }
-  }
+
+
 
   updateJump(deltaTime) {
-
-    setTimeout(()=> {
       // Updates the jump progress over time
       this.jumpTimer -= deltaTime;
       if (this.jumpTimer <= 0 || this.getComponent(Physics).velocity.y > 0) {
         this.isJumping = false;
-        console.log("Test2")
       }
-    },3000)
   }
 
   collidedWithEnemy() {
