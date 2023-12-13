@@ -25,11 +25,12 @@ class Player extends GameObject {
     this.isOnPlatform = false;
     this.isJumping = false;
     this.jumpForce = 400;
-    this.jumpTime = 0.3;
+    this.jumpTime = 3.0;
     this.jumpTimer = 0;
     this.isInvulnerable = false;
     this.isGamepadMovement = false;
     this.isGamepadJump = false;
+    this.inAir = false;
   }
 
   // The update function runs every frame and contains game logic
@@ -152,15 +153,34 @@ class Player extends GameObject {
       this.getComponent(Physics).velocity.y = -this.jumpForce;
       this.isOnPlatform = false;
       new Renderer('blue', 50, 60, Images.playerJump);
+      this.inAir = true;
+      console.log(this.inAir);
+      setTimeout(()=> {
+        this.doubleJump();
+        console.log("Test1")
+      },1000)
     }
   }
-  
-  updateJump(deltaTime) {
-    // Updates the jump progress over time
-    this.jumpTimer -= deltaTime;
-    if (this.jumpTimer <= 0 || this.getComponent(Physics).velocity.y > 0) {
-      this.isJumping = false;
+
+  doubleJump(){
+    const input = this.getComponent(Input);
+    if(this.inAir && this.isJumping){
+        if (!this.isGamepadJump && input.isKeyDown('ArrowUp') && this.inAir) {
+          this.getComponent(Physics).velocity.y = -this.jumpForce;
+        }
     }
+  }
+
+  updateJump(deltaTime) {
+
+    setTimeout(()=> {
+      // Updates the jump progress over time
+      this.jumpTimer -= deltaTime;
+      if (this.jumpTimer <= 0 || this.getComponent(Physics).velocity.y > 0) {
+        this.isJumping = false;
+        console.log("Test2")
+      }
+    },3000)
   }
 
   collidedWithEnemy() {

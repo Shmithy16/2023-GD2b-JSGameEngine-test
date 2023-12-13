@@ -3,7 +3,6 @@ import GameObject from './gameobject.js';
 import Particle from './particle.js';
 import Physics from '../engine/physics.js';
 
-var randomColor = Math.floor(Math.random()*16777215).toString(16); //https://css-tricks.com/snippets/javascript/random-hex-color/
 
 // The ParticleSystem class extends GameObject and is responsible for creating and managing a system of particles.
 class ParticleSystem extends GameObject {
@@ -12,7 +11,7 @@ class ParticleSystem extends GameObject {
     // Call the constructor of the parent class (GameObject) and pass the position of the particle system.
     super(x, y);
     // Initialize instance properties.
-    this.color = "#" + randomColor; // Color of the particles.
+    this.color = "#ffffff"; // Color of the particles.
     this.count = count; // Total number of particles to emit.
     this.lifeDuration = lifeDuration; // The life duration of each particle.
     this.emitDuration = emitDuration; // Duration over which particles should be emitted.
@@ -41,9 +40,10 @@ class ParticleSystem extends GameObject {
     const particlesToEmit = Math.ceil((this.count / this.emitDuration) * deltaTime);
     // Emit the calculated number of particles.
     for (let i = 0; i < particlesToEmit && this.particlesEmitted < this.count; i++) {
+      let color = "#" + Math.floor(Math.random()*16777215).toString(16); //https://css-tricks.com/snippets/javascript/random-hex-color/
       // Create a new particle with a random life duration, size, and initial velocity.
       const lifeDuration = this.lifeDuration + Math.random() - 0.5;
-      const particle = new Particle(this.x, this.y, Math.random() * 5, Math.random() * 5, this.color, lifeDuration);
+      const particle = new Particle(this.x, this.y, Math.random() * 5, Math.random() * 5, color, lifeDuration);
       particle.addComponent(new Physics({ x: (Math.random() - 0.5) * 100, y: (Math.random() - 0.5) * 50 }, { x: 0, y: 0 }));
       // Add the particle to the game.
       this.game.addGameObject(particle);
