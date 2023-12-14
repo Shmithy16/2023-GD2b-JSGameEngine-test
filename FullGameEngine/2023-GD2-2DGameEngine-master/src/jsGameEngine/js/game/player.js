@@ -4,6 +4,7 @@ import Renderer from '../engine/renderer.js';
 import Physics from '../engine/physics.js';
 import Input from '../engine/input.js';
 import { Images } from '../engine/resources.js';
+import { AudioFiles } from '../engine/resources.js';
 import Enemy from './enemy.js';
 import Platform from './platform.js';
 import Collectible from './collectible.js';
@@ -14,8 +15,12 @@ class Player extends GameObject {
   // Constructor initializes the game object and add necessary components
   constructor(x, y) {
     super(x, y); // Call parent's constructor
-    this.renderer = new Renderer('blue', 50, 60, Images.player); // Add renderer
-    this.addComponent(this.renderer);
+    this.renderPlayer = new Renderer('blue', 50, 60, Images.player); // Add renderer
+    this.addComponent(this.renderPlayer);
+    this.renderJump = new Renderer('blue', 50, 60, Images.playerJump);
+    this.renderAudioJ = new Audio(AudioFiles.jump); // Add audio for jump
+    this.renderAudioD = new Audio(AudioFiles.death); // Add audio for death
+    this.renderAudioC = new Audio(AudioFiles.collect); // Add audio for death
     this.addComponent(new Physics({ x: 0, y: 0 }, { x: 0, y: 0 })); // Add physics
     this.addComponent(new Input()); // Add input for handling user input
     // Initialize all the player specific properties
@@ -24,7 +29,7 @@ class Player extends GameObject {
     this.score = 0;
     this.isOnPlatform = false;
     this.isJumping = false;
-    this.jumpForce = 400;
+    this.jumpForce = 250;
     this.jumpTime = 3.0;
     this.jumpTimer = 0;
     this.isInvulnerable = false;
@@ -44,21 +49,22 @@ class Player extends GameObject {
     
     const physics = this.getComponent(Physics); // Get physics component
     const input = this.getComponent(Input); // Get input component
-    if(this.upHeld){
+    
+    if(this.upHeld){//checks if you are pressing up 
         this.upHeld = input.isKeyDown('ArrowUp');
       }
 
-    if(!this.hasdoubleJump){
+    if(!this.hasdoubleJump){//checks if you have dont have a double jump then gives it to you
       this.hasdoubleJump = this.isOnPlatform;
     }
     this.handleGamepadInput(input);
     
     // Handle player movement
     if (!this.isGamepadMovement && input.isKeyDown('ArrowRight')) {
-      physics.velocity.x = 100;
+      physics.velocity.x = 200;
       this.direction = -1;
     } else if (!this.isGamepadMovement && input.isKeyDown('ArrowLeft')) {
-      physics.velocity.x = -100;
+      physics.velocity.x = -200;
       this.direction = 1;
     } else if (!this.isGamepadMovement) {
       physics.velocity.x = 0;
@@ -101,15 +107,16 @@ class Player extends GameObject {
         if (!this.isJumping) {
           physics.velocity.y = 0;
           physics.acceleration.y = 0;
-          this.y = platform.y - this.renderer.height;
+          this.y = platform.y - this.renderPlayer.height;
           this.isOnPlatform = true;
         }
       }
     }
   
     // Check if player has fallen off the bottom of the screen
-    if (this.y > this.game.canvas.height) {
+    if (this.y > 150) {
       this.resetPlayerState();
+      console.log("Test")
     }
 
     // Check if player has no lives left
@@ -164,12 +171,16 @@ class Player extends GameObject {
   startJump() {
     // Initiate a jump if the player is on a platform
     if (this.isOnPlatform) { 
+      this.renderAudioJ.play();
       this.isJumping = true;
       this.jumpTimer = this.jumpTime;
       this.getComponent(Physics).velocity.y = -this.jumpForce;
       this.isOnPlatform = false;
-      new Renderer('blue', 50, 60, Images.playerJump);
-    } else if(this.hasdoubleJump){
+      this.renderPlayer = new Renderer('blue', 50, 60, Images.playerJump); // Add renderer
+      // this.addComponent(this.renderPlayer);
+      // this.addComponent(this.renderJump);
+    } else if(this.hasdoubleJump){ //if you have a double jump then you can jump
+      this.renderAudioJ.play();
       this.isJumping = true;
       this.jumpTimer = this.jumpTime;
       this.getComponent(Physics).velocity.y = -this.jumpForce;
@@ -177,6 +188,7 @@ class Player extends GameObject {
       new Renderer('blue', 50, 60, Images.playerJump);
     }
   }
+  //this does a dash that moves you forward a certain amount when hitting space
 dashForward(deltaTime,input,physics){ 
     if(this.canDash && input.isKeyDown("Space")&& this.dashCool<=0 && this.dashCool2<=0){
       this.dashCool = .5;
@@ -205,6 +217,7 @@ dashForward(deltaTime,input,physics){
     if (!this.isInvulnerable) {
       this.lives--;
       this.isInvulnerable = true;
+      this.renderAudioD.play();
       //tried to make it so when the player got hit they would become opaque while they were invincible but couldnt get it working
       // var element = document.getElementById("player");
       // element.style.opacity = "0.9";
@@ -229,6 +242,7 @@ dashForward(deltaTime,input,physics){
     this.score += collectible.value;
     console.log(`Score: ${this.score}`);
     this.emitCollectParticles(collectible);
+    this.renderAudioC.play();
   }
 
   emitCollectParticles() {
@@ -239,8 +253,8 @@ dashForward(deltaTime,input,physics){
 
   resetPlayerState() {
     // Reset the player's state, repositioning it and nullifying movement
-    this.x = this.game.canvas.width / 2;
-    this.y = this.game.canvas.height / 2;
+    this.x = 0//this.game.canvas.width / 2;
+    this.y = -70//this.game.canvas.height / 2;
     this.getComponent(Physics).velocity = { x: 0, y: 0 };
     this.getComponent(Physics).acceleration = { x: 0, y: 0 };
     this.direction = 1;

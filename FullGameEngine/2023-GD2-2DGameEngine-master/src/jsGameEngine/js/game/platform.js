@@ -8,7 +8,7 @@ class Platform extends GameObject {
   
   // Define the constructor for the Platform class. It takes arguments for the x and y coordinates,
   // width, height, and color (with a default value of 'gray' if no color is provided)
-  constructor(x, y, width, height, color = 'gray') {
+  constructor(x, y, width, height, color = 'gray',tag = "platform") {
     
     // Call the constructor of the superclass (GameObject) with the x and y coordinates
     super(x, y);
@@ -22,7 +22,7 @@ class Platform extends GameObject {
     this.addComponent(new Physics({ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }));
     
     // Set the tag property to 'platform'. This can be used to identify platforms later in the game logic
-    this.tag = 'platform'; 
+    this.tag = tag; 
   }
 }
 

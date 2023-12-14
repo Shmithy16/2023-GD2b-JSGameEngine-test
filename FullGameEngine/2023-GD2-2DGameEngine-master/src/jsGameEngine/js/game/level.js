@@ -16,7 +16,7 @@ class Level extends Game {
     super(canvasId);
     
     // Create a player object and add it to the game
-    const player = new Player(this.canvas.width / 2 - 25, this.canvas.height / 2 - 25);
+    const player = new Player(0,-70);//this.canvas.width / 2 - 25, this.canvas.height / 2 - 25
     this.addGameObject(player);
     
     // Add the player UI object to the game
@@ -35,11 +35,12 @@ class Level extends Game {
 
     // Create platforms and add them to the game
     const platforms = [
-      new Platform(0, this.canvas.height - 20, platformWidth, 20),
-      new Platform(platformWidth + gap, this.canvas.height - 20, platformWidth, 20),
-      new Platform(2 * (platformWidth + gap), this.canvas.height - 20, platformWidth, 20),
-      new Platform(3 * (platformWidth + gap), this.canvas.height - 20, platformWidth, 20),
-      new Platform(4 * (platformWidth + gap), this.canvas.height - 20, platformWidth, 20),
+      new Platform(0.0, 0.0, 587.0, 70.0, "rgb(255, 0, 0)", "platform"),
+      new Platform(793.0, 0.0, 587.0, 70.0, "rgb(255, 0, 0)", "platform"),
+      new Platform(1466.0, -145.0, 227.0, 38.5, "rgb(0, 128, 255)", "semi_solid"),
+      new Platform(1804.0, -394.5, 227.0, 38.0, "rgb(0, 128, 255)", "platform"),
+      new Platform(1052.0, -456.5, 227.0, 38.0, "rgb(0, 128, 255)", "platform"),
+              
     ];
     for (const platform of platforms) {
       this.addGameObject(platform);
