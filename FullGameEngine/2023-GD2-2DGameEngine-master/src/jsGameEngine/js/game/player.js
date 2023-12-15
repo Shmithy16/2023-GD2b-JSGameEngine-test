@@ -9,6 +9,7 @@ import Enemy from './enemy.js';
 import Platform from './platform.js';
 import Collectible from './collectible.js';
 import ParticleSystem from '../engine/particleSystem.js';
+import Wall from './wall.js';
 
 // Defining a class Player that extends GameObject
 class Player extends GameObject {
@@ -42,6 +43,7 @@ class Player extends GameObject {
     this.dashSpeed = 500;
     this.dashCool = 0;
     this.dashCool2 = 0;
+    this.isOnWall = false;
   }
 
   // The update function runs every frame and contains game logic
@@ -70,6 +72,7 @@ class Player extends GameObject {
       physics.velocity.x = 0;
     }
     
+    //i got the code for this dash thanks to ida
     this.dashForward(deltaTime,input,physics);
 
     // Handle player jumping
@@ -112,11 +115,19 @@ class Player extends GameObject {
         }
       }
     }
+ 
+    //Handles collisions with walls
+    const walls = this.game.gameObjects.filter((obj) => obj instanceof Wall);
+    for (const wall of walls) {
+      if (physics.isColliding(wall.getComponent(Physics))) {
+        this.x -= physics.velocity.x*deltaTime;
+        physics.velocity.x = 0;
+      }
+    }
   
     // Check if player has fallen off the bottom of the screen
     if (this.y > 150) {
       this.resetPlayerState();
-      console.log("Test")
     }
 
     // Check if player has no lives left
@@ -188,13 +199,14 @@ class Player extends GameObject {
       new Renderer('blue', 50, 60, Images.playerJump);
     }
   }
-  //this does a dash that moves you forward a certain amount when hitting space
+
+  //this does a dash that moves you forward
 dashForward(deltaTime,input,physics){ 
     if(this.canDash && input.isKeyDown("Space")&& this.dashCool<=0 && this.dashCool2<=0){
       this.dashCool = .5;
     }else if(this.dashCool>0){
       this.dashCool-=deltaTime;
-      physics.velocity.x = -this.dashSpeed*this.direction;   //dash actually goes to the right direction
+      physics.velocity.x = -this.dashSpeed*this.direction;   //this makes sure the dash go's in the right direction
       this.dashCool2=1;
     }else if(this.dashCool2>0){
       this.dashCool2-=deltaTime;

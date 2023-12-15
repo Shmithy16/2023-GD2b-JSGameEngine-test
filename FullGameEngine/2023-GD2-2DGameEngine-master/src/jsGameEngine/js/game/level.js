@@ -6,6 +6,7 @@ import PlayerUI from './playerUI.js';
 import Platform from './platform.js';
 import Collectible from './collectible.js';
 import Obstacle from './obstacle.js';
+import Wall from './wall.js';
 
 // Define a class Level that extends the Game class from the engine
 class Level extends Game {
@@ -35,24 +36,35 @@ class Level extends Game {
 
     // Create platforms and add them to the game
     const platforms = [
-      new Platform(0.0, 0.0, 587.0, 70.0, "rgb(255, 0, 0)", "platform"),
       new Platform(793.0, 0.0, 587.0, 70.0, "rgb(255, 0, 0)", "platform"),
       new Platform(1466.0, -145.0, 227.0, 38.5, "rgb(0, 128, 255)", "semi_solid"),
-      new Platform(1804.0, -394.5, 227.0, 38.0, "rgb(0, 128, 255)", "platform"),
-      new Platform(1052.0, -456.5, 227.0, 38.0, "rgb(0, 128, 255)", "platform"),
-              
+      new Platform(1052.0, -456.5, 227.0, 38.0, "rgb(0, 128, 255)", "sami_solid"),
+      new Platform(1804.0, -394.5, 227.0, 38.0, "rgb(0, 128, 255)", "semi_solid"),
+      new Platform(0.0, 0.0, 587.0, 70.0, "rgb(255, 0, 0)", "platform"),
+      new Platform(1052, -694, 227.0, 38, "rgb(0, 128, 255)", "semi_solid"),
+      new Platform(1588, -741, 692, 85, "rgb(255, 0, 0)", "platform"),
+      new Platform(-145.0, -407.0, 125.0, 477.0, "rgb(187, 0, 0)", "wall"),
+      new Platform(1584, -1245, 108, 384, "rgb(187, 0, 0)", "wall"),        
     ];
     for (const platform of platforms) {
       this.addGameObject(platform);
     }
+    //creates walls and adds them to the game
+    const walls = [
+      new Wall(-145.0, -407.0, 125.0, 477.0, "rgb(187, 0, 0)", "wall"),
+      new Wall(1584, -1245, 108, 384, "rgb(187, 0, 0)", "wall"),             
+    ];
+    for (const wall of walls) {
+      this.addGameObject(wall);
+    }
 
     //this creates the obstacles and adds them to the game
     const obstacles = [
-      new Obstacle(0, this.canvas.height - 60, obstacleWidth, 20),
+      new Obstacle(400, -50, obstacleWidth, 20),
       // new Obstacle(obstacleWidth + obGap, this.canvas.height - 40, obstacleWidth, 20),
-      new Obstacle(2 * (obstacleWidth + obGap), this.canvas.height - 60, obstacleWidth, 20),
-      // new Obstacle(3 * (obstacleWidth + obGap), this.canvas.height - 40, obstacleWidth, 20),
-      new Obstacle(4 * (obstacleWidth + obGap)-10, this.canvas.height - 60, obstacleWidth, 20),
+      new Obstacle(800, -50, obstacleWidth, 20),
+      new Obstacle(840, -50, obstacleWidth, 20),
+      new Obstacle(1000, -50, obstacleWidth, 20),
     ];
 
     for (const obstacle of obstacles) {
@@ -60,9 +72,9 @@ class Level extends Game {
     }
 
     // Create enemies and add them to the game
-    this.addGameObject(new Enemy(50, this.canvas.height - 90));
-    this.addGameObject(new Enemy(platformWidth + gap + 50, this.canvas.height - 90));
-    this.addGameObject(new Enemy(2 * (platformWidth + gap) + 50, this.canvas.height - 90));
+    this.addGameObject(new Enemy(1200, -50));
+    this.addGameObject(new Enemy(1466, -150));
+    this.addGameObject(new Enemy(1804, -400));
 
     // Create collectibles and add them to the game
     this.addGameObject(new Collectible(250, this.canvas.height - 100, 20, 20));
