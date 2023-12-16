@@ -13,15 +13,13 @@ class Obstacle extends GameObject{
         this.addComponent(new Renderer(color, 50, 50, Images.obstacle));
 
         this.addComponent(new Physics({ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }));
-
-        // this.tag = 'obstacle';
     }
 
     //this updates the game using delta time (the time between frames) 
     update(deltaTime){
         const physics = this.getComponent(Physics);
 
-        //this checks if the player is colliding with the
+        //this checks if the player is colliding with the player
         const player = this.game.gameObjects.find(obj => obj instanceof Player);
         if (physics.isColliding(player.getComponent(Physics))) {
          player.collidedWithObstacle();

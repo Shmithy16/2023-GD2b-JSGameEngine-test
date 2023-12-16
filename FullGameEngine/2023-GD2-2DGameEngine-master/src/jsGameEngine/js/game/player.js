@@ -10,6 +10,7 @@ import Platform from './platform.js';
 import Collectible from './collectible.js';
 import ParticleSystem from '../engine/particleSystem.js';
 import Wall from './wall.js';
+import UI from '../engine/ui.js';
 
 // Defining a class Player that extends GameObject
 class Player extends GameObject {
@@ -19,9 +20,13 @@ class Player extends GameObject {
     this.renderPlayer = new Renderer('blue', 50, 60, Images.player); // Add renderer
     this.addComponent(this.renderPlayer);
     this.renderJump = new Renderer('blue', 50, 60, Images.playerJump);
+
     this.renderAudioJ = new Audio(AudioFiles.jump); // Add audio for jump
     this.renderAudioD = new Audio(AudioFiles.death); // Add audio for death
     this.renderAudioC = new Audio(AudioFiles.collect); // Add audio for death
+    this.renderAudioW = new Audio(AudioFiles.Win); // Add audio for Win
+    this.renderAudioL = new Audio(AudioFiles.Lose); // Add audio for Win
+
     this.addComponent(new Physics({ x: 0, y: 0 }, { x: 0, y: 0 })); // Add physics
     this.addComponent(new Input()); // Add input for handling user input
     // Initialize all the player specific properties
@@ -94,14 +99,6 @@ class Player extends GameObject {
       }
     }
   
-    // Handle collisions with enemies
-    const enemies = this.game.gameObjects.filter((obj) => obj instanceof Enemy);
-    for (const enemy of enemies) {
-      if (physics.isColliding(enemy.getComponent(Physics))) {
-        this.collidedWithEnemy();
-      }
-    }
-  
     // Handle collisions with platforms
     this.isOnPlatform = false;  // Reset this before checking collisions with platforms
     const platforms = this.game.gameObjects.filter((obj) => obj instanceof Platform);
@@ -132,13 +129,24 @@ class Player extends GameObject {
 
     // Check if player has no lives left
     if (this.lives <= 0) {
-      location.reload();
+      // location.reload();
+      this.renderAudioL.play();
+      this.uiComponent = new UI('You Lose', 600, 250, "40px Arial", "Red");
+      this.addComponent(this.uiComponent);
+      setTimeout(() => {
+        this.resetGame();
+      }, 500);
     }
 
     // Check if player has collected all collectibles
     if (this.score >= 3) {
-      console.log('You win!');
-      location.reload();
+      // location.reload();
+      this.renderAudioW.play();
+      this.uiComponent = new UI('You Win', 600, 250,"40px Arial", "Green");
+      this.addComponent(this.uiComponent);
+      setTimeout(() => {
+        this.resetGame();
+      }, 1500);
     }
 
     super.update(deltaTime);
@@ -213,9 +221,6 @@ dashForward(deltaTime,input,physics){
     }
   }
 
-
-
-
   updateJump(deltaTime) {
       // Updates the jump progress over time
       this.jumpTimer -= deltaTime;
@@ -265,8 +270,8 @@ dashForward(deltaTime,input,physics){
 
   resetPlayerState() {
     // Reset the player's state, repositioning it and nullifying movement
-    this.x = 0//this.game.canvas.width / 2;
-    this.y = -70//this.game.canvas.height / 2;
+    this.x = 100
+    this.y = -70
     this.getComponent(Physics).velocity = { x: 0, y: 0 };
     this.getComponent(Physics).acceleration = { x: 0, y: 0 };
     this.direction = 1;
