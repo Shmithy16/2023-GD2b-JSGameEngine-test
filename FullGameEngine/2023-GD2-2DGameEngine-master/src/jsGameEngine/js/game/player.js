@@ -5,7 +5,6 @@ import Physics from '../engine/physics.js';
 import Input from '../engine/input.js';
 import { Images } from '../engine/resources.js';
 import { AudioFiles } from '../engine/resources.js';
-import Enemy from './enemy.js';
 import Platform from './platform.js';
 import Collectible from './collectible.js';
 import ParticleSystem from '../engine/particleSystem.js';
@@ -75,7 +74,7 @@ class Player extends GameObject {
       physics.velocity.x = 0;
     }
     
-    //i got the code for this dash thanks to ida
+    //I got the code for this dash thanks to ida
     this.dashForward(deltaTime,input,physics);
 
     // Handle player jumping
@@ -83,7 +82,7 @@ class Player extends GameObject {
       this.startJump();
       this.upHeld = true;
     }
-
+    //this is also for the double jump
     if (this.isJumping) {
       this.updateJump(deltaTime);
     }
@@ -127,12 +126,11 @@ class Player extends GameObject {
 
     // Check if player has no lives left
     if (this.lives <= 0) {
-      // location.reload();
       this.renderAudioL.play();
       this.uiComponent = new UI('You Lose', 600, 250, "40px Arial", "Red");
       this.addComponent(this.uiComponent);
       setTimeout(() => {
-        this.resetGame();
+        location.reload();
       }, 500);
     }
 
@@ -143,7 +141,7 @@ class Player extends GameObject {
       this.uiComponent = new UI('You Win', 600, 250,"40px Arial", "Green");
       this.addComponent(this.uiComponent);
       setTimeout(() => {
-        this.resetGame();
+        location.reload();
       }, 1500);
     }
 
@@ -193,7 +191,9 @@ class Player extends GameObject {
       this.jumpTimer = this.jumpTime;
       this.getComponent(Physics).velocity.y = -this.jumpForce;
       this.isOnPlatform = false;
-      this.renderPlayer = new Renderer('blue', 50, 60, Images.playerJump); // Add renderer
+      //this.renderPlayer = new Renderer('blue', 50, 60, Images.playerJump); // Add renderer
+
+      //tried to make it so when the player jumps the spritte would change but couldn't figure it out
       // this.addComponent(this.renderPlayer);
       // this.addComponent(this.renderJump);
     } else if(this.hasdoubleJump){ //if you have a double jump then you can jump
@@ -212,7 +212,7 @@ class Player extends GameObject {
       this.dashLngth = .5;
     }else if(this.dashLngth>0){
       this.dashLngth-=deltaTime;
-      physics.velocity.x = -this.dashSpeed*this.direction;   //dash actually goes to the right direction
+      physics.velocity.x = -this.dashSpeed*this.direction;   //this is what makes the player dash and makes them face the right direction
       this.dashCool=1;
     }else if(this.dashCool>0){
       this.dashCool-=deltaTime;

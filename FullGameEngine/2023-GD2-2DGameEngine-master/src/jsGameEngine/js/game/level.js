@@ -59,7 +59,6 @@ class Level extends Game {
     //this creates the obstacles and adds them to the game
     const obstacles = [
       new Obstacle(400, -50, obstacleWidth, 20),
-      // new Obstacle(obstacleWidth + obGap, this.canvas.height - 40, obstacleWidth, 20),
       new Obstacle(800, -50, obstacleWidth, 20),
       new Obstacle(840, -50, obstacleWidth, 20),
       new Obstacle(1000, -50, obstacleWidth, 20),
