@@ -41,13 +41,11 @@ class Player extends GameObject {
     this.isInvulnerable = false;
     this.isGamepadMovement = false;
     this.isGamepadJump = false;
-    this.inAir = false;
     this.upHeld = false;
     this.hasdoubleJump = false;
-    this.canDash = true;
     this.dashSpeed = 500;
+    this.dashLngth = 0;
     this.dashCool = 0;
-    this.dashCool2 = 0;
     this.isOnWall = false;
   }
 
@@ -209,17 +207,18 @@ class Player extends GameObject {
   }
 
   //this does a dash that moves you forward
-dashForward(deltaTime,input,physics){ 
-    if(this.canDash && input.isKeyDown("Space")&& this.dashCool<=0 && this.dashCool2<=0){
-      this.dashCool = .5;
+  dashForward(deltaTime,input,physics){ 
+    if(input.isKeyDown("Space")&& this.dashLngth<=0 && this.dashCool<=0){
+      this.dashLngth = .5;
+    }else if(this.dashLngth>0){
+      this.dashLngth-=deltaTime;
+      physics.velocity.x = -this.dashSpeed*this.direction;   //dash actually goes to the right direction
+      this.dashCool=1;
     }else if(this.dashCool>0){
       this.dashCool-=deltaTime;
-      physics.velocity.x = -this.dashSpeed*this.direction;   //this makes sure the dash go's in the right direction
-      this.dashCool2=1;
-    }else if(this.dashCool2>0){
-      this.dashCool2-=deltaTime;
     }
   }
+
 
   updateJump(deltaTime) {
       // Updates the jump progress over time
@@ -235,6 +234,7 @@ dashForward(deltaTime,input,physics){
       this.lives--;
       this.isInvulnerable = true;
       this.renderAudioD.play();
+
       //tried to make it so when the player got hit they would become opaque while they were invincible but couldnt get it working
       // var element = document.getElementById("player");
       // element.style.opacity = "0.9";

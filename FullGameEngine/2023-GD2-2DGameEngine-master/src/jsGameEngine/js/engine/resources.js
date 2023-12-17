@@ -4,6 +4,7 @@ const Images = {
   enemy: new Image(), // The Image instance for the enemy.
   obstacle: new Image(), //Image for the spike
   playerJump:new Image(), //Image for the jump
+  collectable: new Image(), //Image for collectable
 };
 
 // Create an AudioFiles object to hold the file paths of the audio resources.
@@ -24,6 +25,8 @@ Images.enemy.src = './resources/images/enemy/enemy.png'; // Update the image pat
 
 // set the source for the spikes image 
 Images.obstacle.src = './resources/images/objects/spikes.png';
+
+Images.collectable.src = './resources/images/objects/collectable.png';
 
 // Export the Images and AudioFiles objects so they can be imported and used in other modules.
 export { Images, AudioFiles };

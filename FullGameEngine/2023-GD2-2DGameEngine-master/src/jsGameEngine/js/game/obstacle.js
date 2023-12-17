@@ -10,9 +10,9 @@ class Obstacle extends GameObject{
 
         super(x,y);
 
-        this.addComponent(new Renderer(color, 50, 50, Images.obstacle));
+        this.addComponent(new Renderer(color, 50, 50, Images.obstacle)); //this creates the obstacle, gives its sizes and sets the imgage to the spikes
 
-        this.addComponent(new Physics({ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }));
+        this.addComponent(new Physics({ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 })); //sets all its physics to 0 as it does not need to move
     }
 
     //this updates the game using delta time (the time between frames) 
